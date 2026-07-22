@@ -1,36 +1,73 @@
+import { auth } from "@clerk/nextjs/server";
 import { prisma } from "@/lib/prisma";
 
 export const dynamic = "force-dynamic";
 
 export default async function DashboardPage() {
-  const school = await prisma.school.findFirst({
+  const { userId } = await auth();
+
+  const staff = await prisma.staff.findFirst({
+    where: { clerkUserId: userId! },
     include: {
-      _count: {
-        select: { students: true, staff: true },
+      school: {
+        include: {
+          _count: {
+            select: { students: true, staff: true, assignments: true, exams: true },
+          },
+        },
       },
     },
   });
 
-  const totalStudents = school?._count.students ?? 0;
-  const totalStaff = school?._count.staff ?? 0;
+  if (!staff) return null;
 
+  const { school } = staff;
   const today = new Date();
   today.setHours(0, 0, 0, 0);
 
-  const todayAttendance = await prisma.attendance.count({ where: { date: today } });
-  const presentToday = await prisma.attendance.count({ where: { date: today, status: "PRESENT" } });
+  const [todayAttendance, presentToday, unreadNotifications] = await Promise.all([
+    prisma.attendance.count({ where: { date: today } }),
+    prisma.attendance.count({ where: { date: today, status: "PRESENT" } }),
+    prisma.notification.count({ where: { read: false } }),
+  ]);
 
-  const totalExams = await prisma.exam.count();
-  const totalAssignments = await prisma.assignment.count();
-
-  const unreadNotifications = await prisma.notification.count({ where: { read: false } });
+  const isEmpty = school._count.students === 0 && school._count.staff <= 1;
 
   return (
     <div>
       <div className="mb-8">
-        <h1 className="text-2xl font-bold text-slate-900">{school?.name || "Welcome to Skuli"}</h1>
-        <p className="text-slate-500 mt-1">School management at a glance</p>
+        <h1 className="text-2xl font-bold text-slate-900">{school.name}</h1>
+        <p className="text-slate-500 mt-1">Welcome back, {staff.name}</p>
       </div>
+
+      {isEmpty && (
+        <div className="bg-gradient-to-r from-purple-50 to-pink-50 border border-purple-200 rounded-2xl p-6 mb-8">
+          <div className="flex items-start gap-4">
+            <div className="w-10 h-10 bg-purple-100 text-purple-600 rounded-xl flex items-center justify-center flex-shrink-0">
+              <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" d="M12 9v3.75m9-.75a9 9 0 11-18 0 9 9 0 0118 0zm-9 3.75h.008v.008H12v-.008z" />
+              </svg>
+            </div>
+            <div>
+              <h3 className="text-sm font-semibold text-slate-900">Get started with {school.name}</h3>
+              <p className="text-sm text-slate-600 mt-1">
+                Your school is set up but has no data yet. Add staff, create classes, and enroll students to get started.
+              </p>
+              <div className="flex flex-wrap gap-2 mt-3">
+                <a href="/dashboard/staff" className="text-xs font-medium text-purple-600 hover:text-purple-700 bg-white border border-purple-200 px-3 py-1.5 rounded-lg hover:bg-purple-50 transition-colors">
+                  Add Staff
+                </a>
+                <a href="/dashboard/students" className="text-xs font-medium text-purple-600 hover:text-purple-700 bg-white border border-purple-200 px-3 py-1.5 rounded-lg hover:bg-purple-50 transition-colors">
+                  Add Students
+                </a>
+                <a href="/dashboard/exams" className="text-xs font-medium text-purple-600 hover:text-purple-700 bg-white border border-purple-200 px-3 py-1.5 rounded-lg hover:bg-purple-50 transition-colors">
+                  Create Exams
+                </a>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
         <div className="bg-white rounded-xl border border-slate-200 p-5">
@@ -42,7 +79,7 @@ export default async function DashboardPage() {
             </div>
             <div>
               <p className="text-sm text-slate-500">Students</p>
-              <p className="text-2xl font-bold text-slate-900">{totalStudents}</p>
+              <p className="text-2xl font-bold text-slate-900">{school._count.students}</p>
             </div>
           </div>
         </div>
@@ -56,7 +93,7 @@ export default async function DashboardPage() {
             </div>
             <div>
               <p className="text-sm text-slate-500">Staff</p>
-              <p className="text-2xl font-bold text-slate-900">{totalStaff}</p>
+              <p className="text-2xl font-bold text-slate-900">{school._count.staff}</p>
             </div>
           </div>
         </div>
@@ -70,7 +107,7 @@ export default async function DashboardPage() {
             </div>
             <div>
               <p className="text-sm text-slate-500">Exams</p>
-              <p className="text-2xl font-bold text-slate-900">{totalExams}</p>
+              <p className="text-2xl font-bold text-slate-900">{school._count.exams}</p>
             </div>
           </div>
         </div>
@@ -84,7 +121,7 @@ export default async function DashboardPage() {
             </div>
             <div>
               <p className="text-sm text-slate-500">Assignments</p>
-              <p className="text-2xl font-bold text-slate-900">{totalAssignments}</p>
+              <p className="text-2xl font-bold text-slate-900">{school._count.assignments}</p>
             </div>
           </div>
         </div>
