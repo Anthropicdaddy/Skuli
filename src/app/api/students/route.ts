@@ -3,7 +3,7 @@ import { prisma } from "@/lib/prisma";
 
 export async function POST(req: Request) {
   const body = await req.json();
-  const { admissionNo, name, grade, stream, gender, feeBalance, parentName, parentPhone, schoolId } = body;
+  const { admissionNo, name, grade, stream, gender, parentName, parentPhone, schoolId } = body;
 
   const school = await prisma.school.findFirst();
   if (!school) return NextResponse.json({ error: "No school" }, { status: 404 });
@@ -16,7 +16,6 @@ export async function POST(req: Request) {
       grade,
       stream: stream || null,
       gender: gender || null,
-      feeBalance: feeBalance || 0,
       parentName: parentName || null,
       parentPhone: parentPhone || null,
     },

@@ -15,14 +15,13 @@ type Student = {
   grade: string;
   stream: string | null;
   gender: string | null;
-  feeBalance: number;
   parentPhone: string | null;
 };
 
 export function StudentsTable({ students, schoolId }: { students: Student[]; schoolId: string }) {
   const [search, setSearch] = useState("");
   const [showAdd, setShowAdd] = useState(false);
-  const [form, setForm] = useState({ admissionNo: "", name: "", grade: "", stream: "", gender: "M", feeBalance: 0, parentName: "", parentPhone: "" });
+  const [form, setForm] = useState({ admissionNo: "", name: "", grade: "", stream: "", gender: "M", parentName: "", parentPhone: "" });
 
   const filtered = students.filter(
     (s) => s.name.toLowerCase().includes(search.toLowerCase()) || s.admissionNo.toLowerCase().includes(search.toLowerCase()) || s.grade.toLowerCase().includes(search.toLowerCase())
@@ -59,7 +58,6 @@ export function StudentsTable({ students, schoolId }: { students: Student[]; sch
               </div>
               <div className="grid grid-cols-2 gap-3">
                 <div><Label>Gender</Label><select className="w-full border rounded-md px-3 py-2 text-sm" value={form.gender} onChange={(e) => setForm({ ...form, gender: e.target.value })}><option value="M">Male</option><option value="F">Female</option></select></div>
-                <div><Label>Fee Balance (KES)</Label><Input type="number" value={form.feeBalance} onChange={(e) => setForm({ ...form, feeBalance: Number(e.target.value) })} /></div>
               </div>
               <div><Label>Parent Name</Label><Input value={form.parentName} onChange={(e) => setForm({ ...form, parentName: e.target.value })} /></div>
               <div><Label>Parent Phone</Label><Input value={form.parentPhone} onChange={(e) => setForm({ ...form, parentPhone: e.target.value })} placeholder="+254712345678" /></div>
@@ -78,13 +76,12 @@ export function StudentsTable({ students, schoolId }: { students: Student[]; sch
               <TableHead>Grade</TableHead>
               <TableHead>Stream</TableHead>
               <TableHead>Gender</TableHead>
-              <TableHead className="text-right">Fee Balance</TableHead>
-              <TableHead>Status</TableHead>
+              <TableHead>Report</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
             {filtered.length === 0 ? (
-              <TableRow><TableCell colSpan={7} className="text-center py-8 text-gray-500">{students.length === 0 ? "No students yet." : "No matches."}</TableCell></TableRow>
+              <TableRow><TableCell colSpan={6} className="text-center py-8 text-gray-500">{students.length === 0 ? "No students yet." : "No matches."}</TableCell></TableRow>
             ) : (
               filtered.map((s) => (
                 <TableRow key={s.id}>
@@ -95,9 +92,8 @@ export function StudentsTable({ students, schoolId }: { students: Student[]; sch
                   <TableCell>{s.grade}</TableCell>
                   <TableCell>{s.stream || "-"}</TableCell>
                   <TableCell>{s.gender || "-"}</TableCell>
-                  <TableCell className="text-right">KES {s.feeBalance.toLocaleString()}</TableCell>
                   <TableCell>
-                    {s.feeBalance === 0 ? <Badge className="bg-green-100 text-green-700">Paid</Badge> : <Badge className="bg-red-100 text-red-700">Outstanding</Badge>}
+                    <a href={`/report/${s.id}`} className="text-xs text-indigo-600 hover:text-indigo-700">View Report →</a>
                   </TableCell>
                 </TableRow>
               ))

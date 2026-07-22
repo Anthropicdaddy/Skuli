@@ -8,18 +8,6 @@ const FEATURES = [
       "Generate beautiful, standards-based progress reports with rubric levels (EE, ME, AE, BE) for every student.",
   },
   {
-    icon: "🔒",
-    title: "Fee Balance Locking",
-    description:
-      "Automatically lock report cards when fees are outstanding. Parents see a clear message to contact the bursar.",
-  },
-  {
-    icon: "📚",
-    title: "Homework Portals",
-    description:
-      "Upload and distribute classwork and assignments digitally. Students and parents can download directly.",
-  },
-  {
     icon: "👩‍🏫",
     title: "Teacher Dashboard",
     description:
@@ -42,7 +30,7 @@ const FEATURES = [
 const PILLARS = [
   { icon: "⚡", label: "Zero Paperwork" },
   { icon: "🎯", label: "Automated CBC Rubrics" },
-  { icon: "💰", label: "Instant M-Pesa Fee Enforcement" },
+  { icon: "📱", label: "Mobile Friendly" },
 ];
 
 const PRICING = [
@@ -54,7 +42,7 @@ const PRICING = [
       "Up to 100 students",
       "2 teacher accounts",
       "CBC report cards",
-      "Fee balance tracking",
+      "Attendance tracking",
       "Email support",
     ],
     cta: "Start Free Trial",
@@ -68,7 +56,6 @@ const PRICING = [
       "Up to 500 students",
       "10 teacher accounts",
       "CBC report cards",
-      "Fee balance locking",
       "Assignment uploads",
       "Priority support",
     ],
@@ -101,7 +88,7 @@ export default function HomePage() {
           <div className="flex justify-between items-center h-16">
             <div className="flex items-center gap-2">
               <span className="text-2xl">🎓</span>
-              <span className="text-xl font-bold text-indigo-600">Skulix</span>
+              <span className="text-xl font-bold text-indigo-600">Skuli</span>
             </div>
             <div className="flex items-center gap-4">
               <Link
@@ -131,7 +118,7 @@ export default function HomePage() {
               <span className="text-yellow-300">Kenyan CBC</span> Schools
             </h1>
             <p className="text-xl md:text-2xl text-indigo-100 mb-8">
-              Manage students, track fees, and generate CBC report cards — all
+              Manage students, attendance, exams, and generate CBC report cards — all
               in one beautiful platform built for Kenya.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
@@ -208,7 +195,7 @@ export default function HomePage() {
               Simple KES Pricing
             </h2>
             <p className="text-lg text-gray-600">
-              No hidden fees. Cancel anytime. Pay per term.
+              No hidden costs. Cancel anytime. Pay per term.
             </p>
           </div>
 
@@ -265,10 +252,10 @@ export default function HomePage() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
           <div className="flex items-center justify-center gap-2 mb-4">
             <span className="text-2xl">🎓</span>
-            <span className="text-xl font-bold text-white">Skulix</span>
+            <span className="text-xl font-bold text-white">Skuli</span>
           </div>
           <p className="text-sm">
-            &copy; {new Date().getFullYear()} Skulix Kenya. Smart ERP for CBC
+            &copy; {new Date().getFullYear()} Skuli Kenya. Smart ERP for CBC
             Schools.
           </p>
         </div>

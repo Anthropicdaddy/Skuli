@@ -53,13 +53,6 @@ export async function getAttendanceByDate(schoolId: string, date: string, grade?
   });
 }
 
-export async function getFeeStructureBySchool(schoolId: string, term: string, year: number) {
-  return prisma.feeStructure.findMany({
-    where: { schoolId, term: term as any, year },
-    orderBy: [{ grade: "asc" }, { category: "asc" }],
-  });
-}
-
 export async function getExamsBySchool(schoolId: string, term: string, year: number) {
   return prisma.exam.findMany({
     where: { schoolId, term: term as any, year },

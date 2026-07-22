@@ -1,4 +1,4 @@
-import { PrismaClient, SchoolRole, CbcRubricLevel, FeeCategory, Term, ExamType } from "../src/generated/prisma/client";
+import { PrismaClient, SchoolRole, CbcRubricLevel, Term, ExamType } from "../src/generated/prisma/client";
 import { PrismaPg } from "@prisma/adapter-pg";
 
 const adapter = new PrismaPg({ connectionString: process.env.DATABASE_URL! });
@@ -61,11 +61,11 @@ async function main() {
 
   // 4. Create students (5 demo)
   const studentsData = [
-    { admissionNo: "SJ/2024/001", name: "Wanjiku Kamau", grade: "Grade 3", stream: "North", gender: "F", feeBalance: 0, parentName: "Joseph Kamau", parentPhone: "+254712345001" },
-    { admissionNo: "SJ/2024/002", name: "Ochieng Odhiambo", grade: "Grade 3", stream: "North", gender: "M", feeBalance: 0, parentName: "Mary Odhiambo", parentPhone: "+254712345002" },
-    { admissionNo: "SJ/2024/003", name: "Amina Hassan", grade: "Grade 4", stream: "South", gender: "F", feeBalance: 0, parentName: "Ali Hassan", parentPhone: "+254712345003" },
-    { admissionNo: "SJ/2024/004", name: "Kipchoge Tanui", grade: "Grade 4", stream: "South", gender: "M", feeBalance: 4500, parentName: "Grace Tanui", parentPhone: "+254712345004" },
-    { admissionNo: "SJ/2024/005", name: "Faith Wambui", grade: "Grade 5", stream: "East", gender: "F", feeBalance: 2800, parentName: "Peter Wambui", parentPhone: "+254712345005" },
+    { admissionNo: "SJ/2024/001", name: "Wanjiku Kamau", grade: "Grade 3", stream: "North", gender: "F", parentName: "Joseph Kamau", parentPhone: "+254712345001" },
+    { admissionNo: "SJ/2024/002", name: "Ochieng Odhiambo", grade: "Grade 3", stream: "North", gender: "M", parentName: "Mary Odhiambo", parentPhone: "+254712345002" },
+    { admissionNo: "SJ/2024/003", name: "Amina Hassan", grade: "Grade 4", stream: "South", gender: "F", parentName: "Ali Hassan", parentPhone: "+254712345003" },
+    { admissionNo: "SJ/2024/004", name: "Kipchoge Tanui", grade: "Grade 4", stream: "South", gender: "M", parentName: "Grace Tanui", parentPhone: "+254712345004" },
+    { admissionNo: "SJ/2024/005", name: "Faith Wambui", grade: "Grade 5", stream: "East", gender: "F", parentName: "Peter Wambui", parentPhone: "+254712345005" },
   ];
 
   const createdStudents = [];
@@ -77,31 +77,7 @@ async function main() {
   }
   console.log(`Students: ${createdStudents.length}`);
 
-  // 5. Create fee structures
-  const feeCategories = [
-    { category: FeeCategory.TUITION, amounts: { "Grade 3": 8000, "Grade 4": 8500, "Grade 5": 9000 } },
-    { category: FeeCategory.BOARDING, amounts: { "Grade 3": 15000, "Grade 4": 15000, "Grade 5": 15000 } },
-    { category: FeeCategory.TRANSPORT, amounts: { "Grade 3": 5000, "Grade 4": 5000, "Grade 5": 5000 } },
-    { category: FeeCategory.LUNCH, amounts: { "Grade 3": 3000, "Grade 4": 3000, "Grade 5": 3000 } },
-  ];
-
-  for (const fc of feeCategories) {
-    for (const [grade, amount] of Object.entries(fc.amounts)) {
-      await prisma.feeStructure.create({
-        data: {
-          schoolId: school.id,
-          grade,
-          term: Term.TERM_1,
-          year: 2024,
-          category: fc.category,
-          amount,
-        },
-      });
-    }
-  }
-  console.log("Fee structures created");
-
-  // 6. Create exams
+  // 5. Create exams
   const examTypes = [
     { name: "CAT 1", type: ExamType.CAT, weight: 20 },
     { name: "Mid-Term Exam", type: ExamType.MID_TERM, weight: 30 },
@@ -123,11 +99,11 @@ async function main() {
   }
   console.log("Exams created");
 
-  // 7. Create CBC results for paid students
+  // 7. Create CBC results for all students
   const subjects = ["Mathematics", "Kiswahili", "English", "Science & Technology", "Hygiene & Nutrition"];
   const rubricLevels: CbcRubricLevel[] = ["EE1", "EE2", "ME1", "ME2", "AE1", "AE2", "BE1", "BE2"];
 
-  for (const student of createdStudents.filter((s) => s.feeBalance === 0)) {
+  for (const student of createdStudents) {
     for (const subject of subjects) {
       await prisma.cbcResult.create({
         data: {
@@ -180,22 +156,7 @@ async function main() {
   }
   console.log("Attendance records created");
 
-  // 9. Create fee payments
-  for (const student of createdStudents.filter((s) => s.feeBalance === 0)) {
-    await prisma.feePayment.create({
-      data: {
-        studentId: student.id,
-        amount: 26000,
-        method: "M_PESA" as any,
-        reference: `QJK${Math.floor(Math.random() * 999999)}`,
-        receivedBy: createdStaff[3].id, // bursar
-        receiptNo: `RCP-${Date.now()}-${student.admissionNo}`,
-      },
-    });
-  }
-  console.log("Fee payments created");
-
-  // 10. Create library books
+  // 9. Create library books
   const books = [
     { title: "Mathematics Grade 3", author: "KNEC", category: "Textbook", copies: 45, available: 40 },
     { title: "Kiswahili Kitabu cha Mwanafunzi", author: "Oxford", category: "Textbook", copies: 40, available: 38 },
@@ -211,7 +172,7 @@ async function main() {
   }
   console.log("Library books created");
 
-  // 11. Create timetable entries
+  // 10. Create timetable entries
   const days = [0, 1, 2, 3, 4]; // Mon-Fri
   const periods = [
     { start: "08:00", end: "08:40", subject: "Mathematics" },
@@ -244,7 +205,7 @@ async function main() {
   }
   console.log("Timetable created");
 
-  // 12. Create assignments
+  // 11. Create assignments
   const assignment = await prisma.assignment.create({
     data: {
       schoolId: school.id,

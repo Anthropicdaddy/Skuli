@@ -31,7 +31,7 @@ const MODULE_ACCESS: Record<string, SchoolRole[]> = {
   staff: ["SUPER_ADMIN", "DIRECTOR", "PRINCIPAL", "IT_MANAGER"],
   attendance: ["SUPER_ADMIN", "DIRECTOR", "PRINCIPAL", "DEPUTY_ACADEMICS", "CLASS_TEACHER", "TEACHER", "HOD", "SENIOR_TEACHER"],
   exams: ["SUPER_ADMIN", "DIRECTOR", "PRINCIPAL", "DEPUTY_ACADEMICS", "HOD", "TEACHER", "CLASS_TEACHER", "SENIOR_TEACHER"],
-  fees: ["SUPER_ADMIN", "DIRECTOR", "PRINCIPAL", "BURSAR", "ACCOUNTANT"],
+  fees: [],
   timetable: ["SUPER_ADMIN", "DIRECTOR", "PRINCIPAL", "DEPUTY_ACADEMICS", "TEACHER"],
   assignments: ["SUPER_ADMIN", "DIRECTOR", "PRINCIPAL", "DEPUTY_ACADEMICS", "HOD", "TEACHER", "CLASS_TEACHER", "SENIOR_TEACHER"],
   library: ["SUPER_ADMIN", "DIRECTOR", "PRINCIPAL", "LIBRARIAN"],
@@ -114,10 +114,6 @@ export function getSidebarItems(role: SchoolRole): { label: string; href: string
     items.push({ label: "Assignments", href: "/dashboard/assignments", icon: "📚" });
   }
 
-  if (canAccessModule(role, "fees")) {
-    items.push({ label: "Fees & Finance", href: "/dashboard/fees", icon: "💰" });
-  }
-
   if (canAccessModule(role, "library")) {
     items.push({ label: "Library", href: "/dashboard/library", icon: "📖" });
   }
@@ -128,6 +124,10 @@ export function getSidebarItems(role: SchoolRole): { label: string; href: string
 
   if (canAccessModule(role, "reports")) {
     items.push({ label: "Reports", href: "/dashboard/reports", icon: "📈" });
+  }
+
+  if (isLeadership(role)) {
+    items.push({ label: "Analytics", href: "/dashboard/analytics", icon: "📉" });
   }
 
   return items;

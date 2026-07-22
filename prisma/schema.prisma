@@ -60,26 +60,6 @@ enum Term {
   TERM_3
 }
 
-enum FeeCategory {
-  TUITION
-  BOARDING
-  TRANSPORT
-  LUNCH
-  ACTIVITY
-  EXAM
-  UNIFORM
-  OTHER
-}
-
-enum PaymentMethod {
-  M_PESA
-  BANK
-  CASH
-  CHEQUE
-  GOVERNMENT_GRANT
-  SPONSOR
-}
-
 enum ExamType {
   CAT
   MID_TERM
@@ -130,7 +110,6 @@ model School {
   staff           Staff[]
   students        Student[]
   departments     Department[]
-  feeStructures   FeeStructure[]
   exams           Exam[]
   assignments     Assignment[]
   timetables      Timetable[]
@@ -197,9 +176,8 @@ model Student {
   stream         String?
   gender         String?
   dateOfBirth    DateTime?
-  upiNumber      String?  // NEMIS Unique Personal Identifier
-  feeBalance     Float    @default(0)
-  parentName     String?
+   upiNumber      String?  // NEMIS Unique Personal Identifier
+   parentName     String?
   parentPhone    String?
   parentEmail    String?
   parentPassword String?  // for parent portal login
@@ -209,11 +187,9 @@ model Student {
   school         School              @relation(fields: [schoolId], references: [id], onDelete: Cascade)
   cbcResults     CbcResult[]
   competencies   StudentCompetency[]
-  attendance     Attendance[]
-  submissions    AssignmentSubmission[]
-  feePayments    FeePayment[]
-  feeInvoices    FeeInvoice[]
-  notifications  Notification[]
+   attendance     Attendance[]
+   submissions    AssignmentSubmission[]
+   notifications  Notification[]
 
   @@unique([schoolId, admissionNo])
   @@index([schoolId])
@@ -298,65 +274,6 @@ model StaffAttendance {
   @@unique([staffId, date])
   @@index([staffId, date])
   @@map("staff_attendance")
-}
-
-// ─── Fee Structure ───────────────────────────────────────
-
-model FeeStructure {
-  id          String       @id @default(cuid())
-  schoolId    String
-  grade       String
-  term        Term
-  year        Int
-  category    FeeCategory
-  amount      Float
-  description String?
-  createdAt   DateTime     @default(now())
-
-  school      School       @relation(fields: [schoolId], references: [id], onDelete: Cascade)
-  invoices    FeeInvoice[]
-
-  @@unique([schoolId, grade, term, year, category])
-  @@index([schoolId])
-  @@map("fee_structures")
-}
-
-// ─── Fee Payment ─────────────────────────────────────────
-
-model FeePayment {
-  id              String        @id @default(cuid())
-  studentId       String
-  amount          Float
-  method          PaymentMethod
-  reference       String?       // M-Pesa code, cheque number, etc.
-  receivedBy      String?       // staff ID
-  notes           String?
-  receiptNo       String?
-  createdAt       DateTime      @default(now())
-
-  student         Student       @relation(fields: [studentId], references: [id], onDelete: Cascade)
-
-  @@index([studentId])
-  @@index([createdAt])
-  @@map("fee_payments")
-}
-
-// ─── Fee Invoice ─────────────────────────────────────────
-
-model FeeInvoice {
-  id              String        @id @default(cuid())
-  studentId       String
-  feeStructureId  String
-  amount          Float
-  paid            Float         @default(0)
-  dueDate         DateTime?
-  createdAt       DateTime      @default(now())
-
-  student         Student       @relation(fields: [studentId], references: [id], onDelete: Cascade)
-  feeStructure    FeeStructure  @relation(fields: [feeStructureId], references: [id], onDelete: Cascade)
-
-  @@index([studentId])
-  @@map("fee_invoices")
 }
 
 // ─── Exam ────────────────────────────────────────────────
