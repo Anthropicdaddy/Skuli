@@ -1,0 +1,129 @@
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+enum CbcLevel {
+  EE
+  ME
+  AE
+  BE
+}
+
+enum Term {
+  TERM_1
+  TERM_2
+  TERM_3
+}
+
+model School {
+  id          String    @id @default(cuid())
+  clerkOrgId  String    @unique
+  name        String
+  logoUrl     String?
+  phone       String?
+  email       String?
+  address     String?
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+
+  students      Student[]
+  assignments   Assignment[]
+  teachers       Teacher[]
+
+  @@map("schools")
+}
+
+model Teacher {
+  id          String   @id @default(cuid())
+  clerkUserId String   @unique
+  schoolId    String
+  name        String
+  email       String?
+  role        String   @default("teacher") // teacher | admin | director
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  school      School   @relation(fields: [schoolId], references: [id], onDelete: Cascade)
+
+  @@index([schoolId])
+  @@map("teachers")
+}
+
+model Student {
+  id           String   @id @default(cuid())
+  schoolId     String
+  admissionNo  String
+  name         String
+  grade        String
+  stream       String?
+  feeBalance   Float    @default(0)
+  parentPhone  String?
+  parentEmail  String?
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  school       School       @relation(fields: [schoolId], references: [id], onDelete: Cascade)
+  cbcResults   CbcResult[]
+  assignments  StudentAssignment[]
+
+  @@unique([schoolId, admissionNo])
+  @@index([schoolId])
+  @@map("students")
+}
+
+model CbcResult {
+  id          String   @id @default(cuid())
+  studentId   String
+  subject     String
+  term        Term
+  year        Int
+  rubricLevel CbcLevel
+  remark      String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  student     Student  @relation(fields: [studentId], references: [id], onDelete: Cascade)
+
+  @@unique([studentId, subject, term, year])
+  @@index([studentId])
+  @@map("cbc_results")
+}
+
+model Assignment {
+  id          String   @id @default(cuid())
+  schoolId    String
+  title       String
+  description String?
+  fileUrl     String?
+  grade       String
+  subject     String
+  term        Term
+  year        Int
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  school      School              @relation(fields: [schoolId], references: [id], onDelete: Cascade)
+  students    StudentAssignment[]
+
+  @@index([schoolId])
+  @@map("assignments")
+}
+
+model StudentAssignment {
+  id           String     @id @default(cuid())
+  studentId    String
+  assignmentId String
+  downloaded   Boolean    @default(false)
+  createdAt    DateTime   @default(now())
+
+  student      Student    @relation(fields: [studentId], references: [id], onDelete: Cascade)
+  assignment   Assignment @relation(fields: [assignmentId], references: [id], onDelete: Cascade)
+
+  @@unique([studentId, assignmentId])
+  @@map("student_assignments")
+}
