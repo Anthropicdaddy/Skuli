@@ -14,7 +14,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Skulix Kenya - Smart ERP for CBC Schools",
+  title: "Skuli - Smart ERP for Kenyan CBC Schools",
   description:
     "Multi-tenant school management system for Kenyan CBC schools. Manage students, attendance, exams, and generate CBC report cards.",
 };

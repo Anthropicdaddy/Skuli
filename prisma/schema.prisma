@@ -115,6 +115,9 @@ model School {
   timetables      Timetable[]
   libraryBooks    LibraryBook[]
   notifications   Notification[]
+  announcements   Announcement[]
+  trips           Trip[]
+  studyMaterials  StudyMaterial[]
   auditLogs       AuditLog[]
 
   @@map("schools")
@@ -446,6 +449,67 @@ model Notification {
   @@index([schoolId])
   @@index([studentId])
   @@map("notifications")
+}
+
+// ─── Announcements ──────────────────────────────────────
+
+model Announcement {
+  id          String   @id @default(cuid())
+  schoolId    String
+  title       String
+  content     String
+  priority    String   @default("normal") // low, normal, high, urgent
+  targetRole  String?  // null = all, STUDENT, PARENT, TEACHER
+  authorId    String?
+  authorName  String?
+  createdAt   DateTime @default(now())
+
+  school      School   @relation(fields: [schoolId], references: [id], onDelete: Cascade)
+
+  @@index([schoolId])
+  @@map("announcements")
+}
+
+// ─── Trips ──────────────────────────────────────────────
+
+model Trip {
+  id          String   @id @default(cuid())
+  schoolId    String
+  title       String
+  destination String
+  description String?
+  date        DateTime
+  returnDate  DateTime?
+  cost        Decimal? @db.Decimal(10, 2)
+  status      String   @default("upcoming") // upcoming, ongoing, completed, cancelled
+  maxStudents Int?
+  createdAt   DateTime @default(now())
+
+  school      School   @relation(fields: [schoolId], references: [id], onDelete: Cascade)
+
+  @@index([schoolId])
+  @@map("trips")
+}
+
+// ─── Class Materials ────────────────────────────────────
+
+model StudyMaterial {
+  id          String   @id @default(cuid())
+  schoolId    String
+  title       String
+  description String?
+  subject     String
+  grade       String
+  type        String   @default("document") // document, ebook, video, link
+  fileUrl     String?
+  externalUrl String?
+  uploadedBy  String?
+  createdAt   DateTime @default(now())
+
+  school      School   @relation(fields: [schoolId], references: [id], onDelete: Cascade)
+
+  @@index([schoolId])
+  @@map("study_materials")
 }
 
 // ─── Audit Log ───────────────────────────────────────────
