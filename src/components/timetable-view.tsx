@@ -4,18 +4,28 @@ import { useState } from "react";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 
 const DAYS = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"];
-const PERIODS = [
-  { period: 1, time: "08:00 - 08:40" },
-  { period: 2, time: "08:45 - 09:25" },
-  { period: 3, time: "09:30 - 10:10" },
-  { period: 4, time: "10:15 - 10:55" },
-  { period: 5, time: "11:00 - 11:40" },
-  { period: 6, time: "11:45 - 12:25" },
-  { period: 7, time: "12:30 - 13:10" },
-];
 
-export function TimetableView({ grades }: { grades: string[] }) {
+type TimetableEntry = {
+  id: string;
+  dayOfWeek: number;
+  period: number;
+  startTime: string;
+  endTime: string;
+  subject: string;
+  room: string | null;
+  staff: { name: string } | null;
+};
+
+export function TimetableView({ grades, timetable }: { grades: string[]; timetable: TimetableEntry[] }) {
   const [selectedGrade, setSelectedGrade] = useState(grades[0] || "");
+
+  const filtered = timetable;
+
+  function getEntry(dayIndex: number, period: number) {
+    return filtered.find((t) => t.dayOfWeek === dayIndex && t.period === period);
+  }
+
+  const maxPeriod = timetable.length > 0 ? Math.max(...timetable.map((t) => t.period)) : 7;
 
   return (
     <div className="space-y-4">
@@ -23,46 +33,67 @@ export function TimetableView({ grades }: { grades: string[] }) {
         <div className="flex-1">
           <label className="text-sm font-medium text-gray-700 mb-1 block">Grade</label>
           <Select value={selectedGrade} onValueChange={(v) => setSelectedGrade(v ?? "")}>
-            <SelectTrigger><SelectValue /></SelectTrigger>
-            <SelectContent>{grades.map((g) => <SelectItem key={g} value={g}>{g}</SelectItem>)}</SelectContent>
+            <SelectTrigger><SelectValue placeholder="Select grade" /></SelectTrigger>
+            <SelectContent>
+              {grades.length === 0 ? (
+                <SelectItem value="none" disabled>No grades yet</SelectItem>
+              ) : (
+                grades.map((g) => <SelectItem key={g} value={g}>{g}</SelectItem>)
+              )}
+            </SelectContent>
           </Select>
+        </div>
+        <div className="text-sm text-gray-500">
+          {filtered.length} entries
         </div>
       </div>
 
-      <div className="bg-white rounded-xl border border-gray-200 overflow-hidden">
-        <div className="overflow-x-auto">
-          <table className="w-full text-sm">
-            <thead>
-              <tr className="border-b border-gray-200">
-                <th className="p-3 text-left font-medium text-gray-500 w-24">Period</th>
-                {DAYS.map((day) => (
-                  <th key={day} className="p-3 text-left font-medium text-gray-500">{day}</th>
-                ))}
-              </tr>
-            </thead>
-            <tbody>
-              {PERIODS.map((p) => (
-                <tr key={p.period} className="border-b border-gray-100">
-                  <td className="p-3">
-                    <div className="text-xs font-medium text-gray-900">P{p.period}</div>
-                    <div className="text-xs text-gray-400">{p.time}</div>
-                  </td>
-                  {DAYS.map((day, di) => (
-                    <td key={day} className="p-2">
-                      <div className="bg-indigo-50 rounded-lg p-2 text-xs">
-                        <div className="font-medium text-indigo-700">
-                          {["Math", "Kiswahili", "English", "Science", "Hygiene", "Religious Ed", "Creative Arts"][(p.period + di) % 7]}
-                        </div>
-                        <div className="text-indigo-400 mt-0.5">Room {(p.period % 4) + 1}</div>
-                      </div>
-                    </td>
+      {timetable.length === 0 ? (
+        <div className="bg-white rounded-xl border border-gray-200 p-12 text-center text-gray-500">
+          <span className="text-3xl block mb-2">📅</span>
+          No timetable entries yet. Add students and create a timetable.
+        </div>
+      ) : (
+        <div className="bg-white rounded-xl border border-gray-200 overflow-hidden">
+          <div className="overflow-x-auto">
+            <table className="w-full text-sm">
+              <thead>
+                <tr className="border-b border-gray-200">
+                  <th className="p-3 text-left font-medium text-gray-500 w-24">Period</th>
+                  {DAYS.map((day) => (
+                    <th key={day} className="p-3 text-left font-medium text-gray-500">{day}</th>
                   ))}
                 </tr>
-              ))}
-            </tbody>
-          </table>
+              </thead>
+              <tbody>
+                {Array.from({ length: maxPeriod }, (_, i) => i + 1).map((period) => (
+                  <tr key={period} className="border-b border-gray-100">
+                    <td className="p-3">
+                      <div className="text-xs font-medium text-gray-900">P{period}</div>
+                    </td>
+                    {DAYS.map((day, dayIndex) => {
+                      const entry = getEntry(dayIndex, period);
+                      return (
+                        <td key={day} className="p-2">
+                          {entry ? (
+                            <div className="bg-indigo-50 rounded-lg p-2 text-xs">
+                              <div className="font-medium text-indigo-700">{entry.subject}</div>
+                              <div className="text-indigo-400 mt-0.5">{entry.staff?.name || "—"}</div>
+                              {entry.room && <div className="text-indigo-300 mt-0.5">{entry.room}</div>}
+                            </div>
+                          ) : (
+                            <div className="bg-gray-50 rounded-lg p-2 text-xs text-gray-300">—</div>
+                          )}
+                        </td>
+                      );
+                    })}
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
         </div>
-      </div>
+      )}
     </div>
   );
 }
