@@ -41,9 +41,9 @@ export default async function DashboardPage() {
       </div>
 
       {isEmpty && (
-        <div className="bg-gradient-to-r from-purple-50 to-pink-50 border border-purple-200 rounded-2xl p-6 mb-8">
+        <div className="bg-gradient-to-r from-neutral-50 to-neutral-100 border border-neutral-200 rounded-2xl p-6 mb-8">
           <div className="flex items-start gap-4">
-            <div className="w-10 h-10 bg-purple-100 text-purple-600 rounded-xl flex items-center justify-center flex-shrink-0">
+            <div className="w-10 h-10 bg-neutral-100 text-neutral-900 rounded-xl flex items-center justify-center flex-shrink-0">
               <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" d="M12 9v3.75m9-.75a9 9 0 11-18 0 9 9 0 0118 0zm-9 3.75h.008v.008H12v-.008z" />
               </svg>
@@ -54,13 +54,13 @@ export default async function DashboardPage() {
                 Your school is set up but has no data yet. Add staff, create classes, and enroll students to get started.
               </p>
               <div className="flex flex-wrap gap-2 mt-3">
-                <a href="/dashboard/staff" className="text-xs font-medium text-purple-600 hover:text-purple-700 bg-white border border-purple-200 px-3 py-1.5 rounded-lg hover:bg-purple-50 transition-colors">
+                <a href="/dashboard/staff" className="text-xs font-medium text-neutral-900 hover:text-neutral-700 bg-white border border-neutral-200 px-3 py-1.5 rounded-lg hover:bg-neutral-50 transition-colors">
                   Add Staff
                 </a>
-                <a href="/dashboard/students" className="text-xs font-medium text-purple-600 hover:text-purple-700 bg-white border border-purple-200 px-3 py-1.5 rounded-lg hover:bg-purple-50 transition-colors">
+                <a href="/dashboard/students" className="text-xs font-medium text-neutral-900 hover:text-neutral-700 bg-white border border-neutral-200 px-3 py-1.5 rounded-lg hover:bg-neutral-50 transition-colors">
                   Add Students
                 </a>
-                <a href="/dashboard/exams" className="text-xs font-medium text-purple-600 hover:text-purple-700 bg-white border border-purple-200 px-3 py-1.5 rounded-lg hover:bg-purple-50 transition-colors">
+                <a href="/dashboard/exams" className="text-xs font-medium text-neutral-900 hover:text-neutral-700 bg-white border border-neutral-200 px-3 py-1.5 rounded-lg hover:bg-neutral-50 transition-colors">
                   Create Exams
                 </a>
               </div>
@@ -72,8 +72,8 @@ export default async function DashboardPage() {
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
         <div className="bg-white rounded-xl border border-slate-200 p-5">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 bg-purple-100 rounded-lg flex items-center justify-center">
-              <svg className="w-5 h-5 text-purple-600" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor">
+            <div className="w-10 h-10 bg-neutral-100 rounded-lg flex items-center justify-center">
+              <svg className="w-5 h-5 text-neutral-900" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" d="M4.26 10.147a60.438 60.438 0 00-.491 6.347A48.62 48.62 0 0112 20.904a48.62 48.62 0 018.232-4.41 60.46 60.46 0 00-.491-6.347m-15.482 0a50.636 50.636 0 00-2.658-.813A59.906 59.906 0 0112 3.493a59.903 59.903 0 0110.399 5.84c-.896.248-1.783.52-2.658.814m-15.482 0A50.717 50.717 0 0112 13.489a50.702 50.702 0 017.74-3.342" />
               </svg>
             </div>
@@ -159,7 +159,7 @@ export default async function DashboardPage() {
         <div className="bg-white rounded-xl border border-slate-200 p-5">
           <h3 className="text-sm font-medium text-slate-500 mb-2">Quick Actions</h3>
           <div className="grid grid-cols-2 gap-2">
-            <a href="/dashboard/students" className="text-xs font-medium text-purple-600 hover:text-purple-700 px-2 py-1 rounded bg-purple-50 text-center">
+            <a href="/dashboard/students" className="text-xs font-medium text-neutral-900 hover:text-neutral-700 px-2 py-1 rounded bg-neutral-50 text-center">
               Add Student
             </a>
             <a href="/dashboard/exams" className="text-xs font-medium text-pink-600 hover:text-pink-700 px-2 py-1 rounded bg-pink-50 text-center">

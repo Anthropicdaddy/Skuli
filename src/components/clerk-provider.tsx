@@ -9,7 +9,7 @@ export function ClerkProvider({ children }: { children: ReactNode }) {
       publishableKey={process.env.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY}
       appearance={{
         variables: {
-          colorPrimary: "#9333ea",
+          colorPrimary: "#171717",
         },
       }}
     >
