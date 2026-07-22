@@ -24,10 +24,14 @@ const SUBJECTS = [
 ];
 
 const RUBRIC_LEVELS = [
-  { value: "EE", label: "Exceeding Expectations", color: "bg-green-100 text-green-700" },
-  { value: "ME", label: "Meeting Expectations", color: "bg-blue-100 text-blue-700" },
-  { value: "AE", label: "Approaching Expectations", color: "bg-amber-100 text-amber-700" },
-  { value: "BE", label: "Below Expectations", color: "bg-red-100 text-red-700" },
+  { value: "EE1", label: "Exceeding Expectations", color: "bg-green-100 text-green-700" },
+  { value: "EE2", label: "Exceeding Expectations", color: "bg-green-50 text-green-700" },
+  { value: "ME1", label: "Meeting Expectations", color: "bg-blue-100 text-blue-700" },
+  { value: "ME2", label: "Meeting Expectations", color: "bg-blue-50 text-blue-700" },
+  { value: "AE1", label: "Approaching Expectations", color: "bg-amber-100 text-amber-700" },
+  { value: "AE2", label: "Approaching Expectations", color: "bg-amber-50 text-amber-700" },
+  { value: "BE1", label: "Below Expectations", color: "bg-red-100 text-red-700" },
+  { value: "BE2", label: "Below Expectations", color: "bg-red-50 text-red-700" },
 ];
 
 const TERMS = [
@@ -74,7 +78,7 @@ export function GradingForm({
           subject: selectedSubject,
           term: selectedTerm,
           year,
-          rubricLevel: marks[student.id] || "ME",
+          rubricLevel: marks[student.id] || "ME1",
         }),
       })
     );

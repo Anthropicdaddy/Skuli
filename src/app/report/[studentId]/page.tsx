@@ -13,21 +13,19 @@ export default async function ReportPage({
     where: { id: studentId },
     include: {
       school: true,
-      cbcResults: {
-        orderBy: [{ year: "desc" }, { term: "desc" }],
-      },
+      cbcResults: { orderBy: [{ year: "desc" }, { term: "desc" }] },
+      competencies: { orderBy: [{ year: "desc" }, { term: "desc" }] },
     },
   });
 
-  if (!student) {
-    notFound();
-  }
+  if (!student) notFound();
 
   return (
     <ReportCard
       student={student}
       school={student.school}
       results={student.cbcResults}
+      competencies={student.competencies}
     />
   );
 }
