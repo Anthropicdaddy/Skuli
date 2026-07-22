@@ -5,22 +5,7 @@ const adapter = new PrismaPg({ connectionString: process.env.DATABASE_URL! });
 const prisma = new PrismaClient({ adapter });
 
 async function main() {
-  const existing = await prisma.school.findFirst();
-  if (existing) {
-    console.log(`School already exists: ${existing.name} (${existing.id})`);
-    return;
-  }
-
-  const school = await prisma.school.create({
-    data: {
-      clerkOrgId: "org_setup",
-      name: "My School",
-      schoolType: "primary",
-    },
-  });
-
-  console.log(`School created: ${school.name} (${school.id})`);
-  console.log("Run the app to add staff, students, and data through the UI.");
+  console.log("Database is empty. Use the app to add schools, staff, and students.");
 }
 
 main()

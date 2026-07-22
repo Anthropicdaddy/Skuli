@@ -20,7 +20,7 @@ export default function OnboardingPage() {
           school, import your student data, and configure your CBC grading system.
         </p>
         <a
-          href="https://calendly.com/skuli-onboarding"
+          href="https://calendly.com/petermakau"
           target="_blank"
           rel="noopener noreferrer"
           className="inline-flex items-center gap-2 bg-blue-600 text-white px-6 py-3 rounded-lg font-medium hover:bg-blue-700 transition-colors w-full justify-center"
