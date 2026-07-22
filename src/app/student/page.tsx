@@ -1,5 +1,7 @@
 import { prisma } from "@/lib/prisma";
 
+export const dynamic = "force-dynamic";
+
 export default async function StudentDashboardPage() {
   // In production, get studentId from JWT session
   // For MVP, show overview with counts

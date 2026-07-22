@@ -1,5 +1,7 @@
 import { prisma } from "@/lib/prisma";
 
+export const dynamic = "force-dynamic";
+
 export default async function StudentTimetablePage() {
   const timetable = await prisma.timetable.findMany({
     include: { staff: { select: { name: true } } },
