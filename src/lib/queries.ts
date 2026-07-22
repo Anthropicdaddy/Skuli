@@ -1,4 +1,5 @@
 import { prisma } from "@/lib/prisma";
+import { SchoolRole, Term } from "@/generated/prisma/client";
 
 export async function getStaffByClerkId(clerkUserId: string) {
   return prisma.staff.findFirst({
@@ -35,7 +36,7 @@ export async function getStaffBySchool(schoolId: string, role?: string) {
   return prisma.staff.findMany({
     where: {
       schoolId,
-      ...(role ? { role: role as any } : {}),
+      ...(role ? { role: role as SchoolRole } : {}),
     },
     include: { department: true },
     orderBy: [{ role: "asc" }, { name: "asc" }],
@@ -55,7 +56,7 @@ export async function getAttendanceByDate(schoolId: string, date: string, grade?
 
 export async function getExamsBySchool(schoolId: string, term: string, year: number) {
   return prisma.exam.findMany({
-    where: { schoolId, term: term as any, year },
+    where: { schoolId, term: term as Term, year },
     include: { _count: { select: { results: true } } },
     orderBy: { createdAt: "desc" },
   });

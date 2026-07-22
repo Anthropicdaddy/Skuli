@@ -30,7 +30,7 @@ const roleColors: Record<string, string> = {
   LIBRARIAN: "bg-cyan-100 text-cyan-700",
 };
 
-export function StaffTable({ staff, schoolId }: { staff: StaffMember[]; schoolId: string }) {
+export function StaffTable({ staff }: { staff: StaffMember[] }) {
   const [search, setSearch] = useState("");
 
   const filtered = staff.filter(

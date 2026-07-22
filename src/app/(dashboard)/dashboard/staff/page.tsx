@@ -17,7 +17,7 @@ export default async function StaffPage() {
         <h1 className="text-2xl font-bold text-gray-900">Staff</h1>
         <p className="text-gray-500 mt-1">Manage staff members and roles</p>
       </div>
-      <StaffTable staff={staff} schoolId={school.id} />
+      <StaffTable staff={staff} />
     </div>
   );
 }

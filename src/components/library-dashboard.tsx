@@ -6,7 +6,7 @@ import { Badge } from "@/components/ui/badge";
 type Book = { id: string; title: string; author: string | null; category: string | null; copies: number; available: number; isbn: string | null };
 type Transaction = { id: string; book: { title: string }; studentId: string; issueDate: Date; dueDate: Date; returnDate: Date | null; fine: number };
 
-export function LibraryDashboard({ books, transactions, schoolId }: { books: Book[]; transactions: Transaction[]; schoolId: string }) {
+export function LibraryDashboard({ books, transactions }: { books: Book[]; transactions: Transaction[] }) {
   const totalBooks = books.reduce((sum, b) => sum + b.copies, 0);
   const totalAvailable = books.reduce((sum, b) => sum + b.available, 0);
 

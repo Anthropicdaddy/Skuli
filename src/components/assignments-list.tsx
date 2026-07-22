@@ -15,7 +15,7 @@ type Assignment = {
   _count: { submissions: number };
 };
 
-export function AssignmentsList({ assignments, schoolId }: { assignments: Assignment[]; schoolId: string }) {
+export function AssignmentsList({ assignments }: { assignments: Assignment[] }) {
   return (
     <div className="bg-white rounded-xl border border-gray-200 overflow-hidden">
       {assignments.length === 0 ? (

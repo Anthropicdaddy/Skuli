@@ -3,7 +3,6 @@
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Badge } from "@/components/ui/badge";
 
 type Student = {
   id: string;
@@ -19,7 +18,7 @@ const STATUS_COLORS: Record<string, string> = {
   EXCUSED: "bg-blue-100 text-blue-700",
 };
 
-export function AttendanceGrid({ students, grades, schoolId }: { students: Student[]; grades: string[]; schoolId: string }) {
+export function AttendanceGrid({ students, grades }: { students: Student[]; grades: string[] }) {
   const [selectedGrade, setSelectedGrade] = useState("");
   const [statuses, setStatuses] = useState<Record<string, string>>({});
   const [saving, setSaving] = useState(false);

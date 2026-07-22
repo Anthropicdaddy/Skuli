@@ -206,7 +206,7 @@ async function main() {
   console.log("Timetable created");
 
   // 11. Create assignments
-  const assignment = await prisma.assignment.create({
+  await prisma.assignment.create({
     data: {
       schoolId: school.id,
       title: "Mathematics Term 1 Exercise",

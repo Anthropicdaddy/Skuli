@@ -21,7 +21,7 @@ export default async function LibraryPage() {
         <h1 className="text-2xl font-bold text-gray-900">Library</h1>
         <p className="text-gray-500 mt-1">Manage books, issues, and returns</p>
       </div>
-      <LibraryDashboard books={books} transactions={activeTransactions} schoolId={school.id} />
+      <LibraryDashboard books={books} transactions={activeTransactions} />
     </div>
   );
 }

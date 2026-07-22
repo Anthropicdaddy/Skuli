@@ -14,7 +14,7 @@ const PERIODS = [
   { period: 7, time: "12:30 - 13:10" },
 ];
 
-export function TimetableView({ grades, schoolId }: { grades: string[]; schoolId: string }) {
+export function TimetableView({ grades }: { grades: string[] }) {
   const [selectedGrade, setSelectedGrade] = useState(grades[0] || "");
 
   return (

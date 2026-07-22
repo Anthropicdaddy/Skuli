@@ -18,7 +18,7 @@ export default async function AttendancePage() {
         <h1 className="text-2xl font-bold text-gray-900">Attendance</h1>
         <p className="text-gray-500 mt-1">Mark daily attendance for your students</p>
       </div>
-      <AttendanceGrid students={students} grades={grades} schoolId={school.id} />
+      <AttendanceGrid students={students} grades={grades} />
     </div>
   );
 }

@@ -34,7 +34,7 @@ export default async function GradingPage() {
         </p>
       </div>
 
-      <GradingForm students={students} grades={grades} schoolId={school.id} />
+      <GradingForm students={students} grades={grades} />
     </div>
   );
 }

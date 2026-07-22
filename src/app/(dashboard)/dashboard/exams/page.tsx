@@ -24,7 +24,7 @@ export default async function ExamsPage() {
         <h1 className="text-2xl font-bold text-gray-900">Exams & Grading</h1>
         <p className="text-gray-500 mt-1">Manage exams and enter marks</p>
       </div>
-      <ExamsList exams={exams} students={students} grades={grades} schoolId={school.id} />
+      <ExamsList exams={exams} students={students} grades={grades} />
     </div>
   );
 }

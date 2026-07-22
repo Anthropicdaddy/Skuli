@@ -9,7 +9,6 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
 
 const SUBJECTS = [
   "Mathematics",
@@ -50,11 +49,9 @@ type Student = {
 export function GradingForm({
   students,
   grades,
-  schoolId,
 }: {
   students: Student[];
   grades: string[];
-  schoolId: string;
 }) {
   const [selectedGrade, setSelectedGrade] = useState("");
   const [selectedSubject, setSelectedSubject] = useState("");

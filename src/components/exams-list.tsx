@@ -2,8 +2,6 @@
 
 import { useState } from "react";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Badge } from "@/components/ui/badge";
 
@@ -23,7 +21,7 @@ const RUBRIC: Record<string, { label: string; color: string }> = {
 
 const SUBJECTS = ["Mathematics", "Kiswahili", "English", "Science & Technology", "Hygiene & Nutrition", "Social Studies", "Religious Education", "Creative Arts"];
 
-export function ExamsList({ exams, students, grades, schoolId }: { exams: Exam[]; students: Student[]; grades: string[]; schoolId: string }) {
+export function ExamsList({ exams, students, grades }: { exams: Exam[]; students: Student[]; grades: string[] }) {
   const [selectedGrade, setSelectedGrade] = useState("");
   const [selectedSubject, setSelectedSubject] = useState("");
   const [marks, setMarks] = useState<Record<string, string>>({});

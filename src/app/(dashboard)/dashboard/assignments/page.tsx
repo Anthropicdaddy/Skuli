@@ -17,7 +17,7 @@ export default async function AssignmentsPage() {
         <h1 className="text-2xl font-bold text-gray-900">Assignments</h1>
         <p className="text-gray-500 mt-1">Create and manage student assignments</p>
       </div>
-      <AssignmentsList assignments={assignments} schoolId={school.id} />
+      <AssignmentsList assignments={assignments} />
     </div>
   );
 }

@@ -17,7 +17,7 @@ export default async function TimetablePage() {
         <h1 className="text-2xl font-bold text-gray-900">Timetable</h1>
         <p className="text-gray-500 mt-1">View and manage class schedules</p>
       </div>
-      <TimetableView grades={grades} schoolId={school.id} />
+      <TimetableView grades={grades} />
     </div>
   );
 }

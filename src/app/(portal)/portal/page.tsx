@@ -1,17 +1,4 @@
-import { prisma } from "@/lib/prisma";
 import Link from "next/link";
-
-async function getParentStudent(parentPhone: string) {
-  const student = await prisma.student.findFirst({
-    where: { parentPhone },
-    include: {
-      cbcResults: { orderBy: [{ year: "desc" }, { term: "desc" }], take: 10 },
-      attendance: { orderBy: { date: "desc" }, take: 30 },
-      submissions: { orderBy: { submittedAt: "desc" }, take: 10, include: { assignment: true } },
-    },
-  });
-  return student;
-}
 
 export default async function PortalHomePage() {
   // In production, get phone from session/cookie. For MVP, show login prompt.
