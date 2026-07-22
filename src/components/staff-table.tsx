@@ -19,7 +19,7 @@ type StaffMember = {
 };
 
 const roleColors: Record<string, string> = {
-  PRINCIPAL: "bg-neutral-100 text-neutral-700",
+  PRINCIPAL: "bg-slate-100 text-slate-700",
   DEPUTY_ACADEMICS: "bg-blue-100 text-blue-700",
   DEPUTY_ADMIN: "bg-blue-100 text-blue-700",
   BURSAR: "bg-green-100 text-green-700",
