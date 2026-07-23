@@ -159,6 +159,9 @@ export default async function DashboardPage() {
         <div className="bg-white rounded-xl border border-slate-200 p-5">
           <h3 className="text-sm font-medium text-slate-500 mb-2">Quick Actions</h3>
           <div className="grid grid-cols-2 gap-2">
+            <a href="/dashboard/staff" className="text-xs font-medium text-slate-900 hover:text-slate-700 px-2 py-1 rounded bg-slate-50 text-center">
+              Add Staff
+            </a>
             <a href="/dashboard/students" className="text-xs font-medium text-slate-900 hover:text-slate-700 px-2 py-1 rounded bg-slate-50 text-center">
               Add Student
             </a>
@@ -167,9 +170,6 @@ export default async function DashboardPage() {
             </a>
             <a href="/dashboard/attendance" className="text-xs font-medium text-green-600 hover:text-green-700 px-2 py-1 rounded bg-green-50 text-center">
               Mark Attendance
-            </a>
-            <a href="/dashboard/library" className="text-xs font-medium text-yellow-600 hover:text-yellow-700 px-2 py-1 rounded bg-yellow-50 text-center">
-              Library
             </a>
           </div>
         </div>

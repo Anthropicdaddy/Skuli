@@ -41,13 +41,12 @@ export default function StaffPage() {
   const [inviteResult, setInviteResult] = useState<{ staffId?: string; error?: string }>({});
 
   useEffect(() => {
-    fetch("/api/admin/schools")
-      .then((r) => r.json())
-      .then(() => fetch("/api/me"))
+    fetch("/api/me")
       .then((r) => r.json())
       .then((data) => {
-        if (data.staff?.schoolId) {
-          return fetch(`/api/school/staff?schoolId=${data.staff.schoolId}`);
+        const schoolId = data.school?.id;
+        if (schoolId) {
+          return fetch(`/api/school/staff?schoolId=${schoolId}`);
         }
         return { json: () => [] };
       })
