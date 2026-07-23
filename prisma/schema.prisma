@@ -96,6 +96,7 @@ model School {
   id          String   @id @default(cuid())
   clerkOrgId  String   @unique
   name        String
+  status      String   @default("pending_review") // pending_review | active | rejected | suspended
   motto       String?
   logoUrl     String?
   phone       String?

@@ -12,6 +12,7 @@ export async function GET(req: Request) {
   const schools = await prisma.school.findMany({
     where: {
       name: { contains: query, mode: "insensitive" },
+      status: "active",
     },
     select: { id: true, name: true },
     take: 10,

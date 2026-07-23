@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { prisma } from "@/lib/prisma";
+import { ApproveRejectButtons } from "./approve-reject";
 
 export const dynamic = "force-dynamic";
 
@@ -41,35 +42,52 @@ export default async function AdminSchoolsPage() {
             const hasClerkInvite = !!principal?.clerkUserId;
 
             return (
-              <div key={school.id} className="px-5 py-4 flex items-center justify-between">
-                <div className="flex-1 min-w-0">
-                  <div className="flex items-center gap-3">
-                    <p className="text-sm font-medium text-black truncate">{school.name}</p>
-                    {hasClerkInvite ? (
-                      <span className="text-xs bg-emerald-50 text-emerald-700 px-2 py-0.5 rounded-full font-medium">
-                        Invited
-                      </span>
-                    ) : principal ? (
-                      <span className="text-xs bg-amber-50 text-amber-700 px-2 py-0.5 rounded-full font-medium">
-                        Pending Invite
-                      </span>
-                    ) : (
-                      <span className="text-xs bg-slate-100 text-slate-500 px-2 py-0.5 rounded-full font-medium">
-                        No Principal
-                      </span>
-                    )}
+              <div key={school.id} className="px-5 py-4">
+                <div className="flex items-center justify-between">
+                  <div className="flex-1 min-w-0">
+                    <div className="flex items-center gap-3">
+                      <p className="text-sm font-medium text-black truncate">{school.name}</p>
+                      {school.status === "active" && (
+                        <span className="text-xs bg-emerald-50 text-emerald-700 px-2 py-0.5 rounded-full font-medium">
+                          Active
+                        </span>
+                      )}
+                      {school.status === "pending_review" && (
+                        <span className="text-xs bg-amber-50 text-amber-700 px-2 py-0.5 rounded-full font-medium">
+                          Pending Review
+                        </span>
+                      )}
+                      {school.status === "rejected" && (
+                        <span className="text-xs bg-red-50 text-red-700 px-2 py-0.5 rounded-full font-medium">
+                          Rejected
+                        </span>
+                      )}
+                      {school.status === "suspended" && (
+                        <span className="text-xs bg-slate-100 text-slate-500 px-2 py-0.5 rounded-full font-medium">
+                          Suspended
+                        </span>
+                      )}
+                      {hasClerkInvite && (
+                        <span className="text-xs bg-cyan-50 text-cyan-700 px-2 py-0.5 rounded-full font-medium">
+                          Clerk Invited
+                        </span>
+                      )}
+                    </div>
+                    <p className="text-xs text-black/40 mt-1">
+                      {school.county || "No county"} · {school.schoolType} · {school._count.students} students · {school._count.staff} staff · Created {school.createdAt.toLocaleDateString()}
+                    </p>
                   </div>
-                  <p className="text-xs text-black/40 mt-1">
-                    {school.county || "No county"} · {school.schoolType} · {school._count.students} students · {school._count.staff} staff
-                  </p>
-                </div>
-                <div className="flex items-center gap-2">
-                  <Link
-                    href={`/admin/schools/${school.id}`}
-                    className="text-xs font-medium text-black hover:underline"
-                  >
-                    Manage
-                  </Link>
+                  <div className="flex items-center gap-3">
+                    {school.status === "pending_review" && (
+                      <ApproveRejectButtons schoolId={school.id} />
+                    )}
+                    <Link
+                      href={`/admin/schools/${school.id}`}
+                      className="text-xs font-medium text-black hover:underline"
+                    >
+                      Manage
+                    </Link>
+                  </div>
                 </div>
               </div>
             );

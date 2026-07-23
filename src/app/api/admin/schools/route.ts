@@ -44,6 +44,7 @@ export async function POST(req: Request) {
     data: {
       clerkOrgId: `pending_${Date.now()}`,
       name,
+      status: "pending_review",
       county: county || null,
       subCounty: subCounty || null,
       schoolType: schoolType || "primary",
@@ -65,4 +66,32 @@ export async function POST(req: Request) {
   });
 
   return NextResponse.json(school, { status: 201 });
+}
+
+export async function PUT(req: Request) {
+  const { userId } = await auth();
+  if (!userId) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+
+  const adminStaff = await prisma.staff.findFirst({ where: { clerkUserId: userId } });
+  if (!adminStaff || adminStaff.role !== "SUPER_ADMIN") {
+    return NextResponse.json({ error: "Forbidden" }, { status: 403 });
+  }
+
+  const body = await req.json();
+  const { schoolId, status } = body;
+
+  if (!schoolId || !status) {
+    return NextResponse.json({ error: "schoolId and status are required" }, { status: 400 });
+  }
+
+  if (!["active", "rejected", "suspended"].includes(status)) {
+    return NextResponse.json({ error: "status must be active, rejected, or suspended" }, { status: 400 });
+  }
+
+  const school = await prisma.school.update({
+    where: { id: schoolId },
+    data: { status },
+  });
+
+  return NextResponse.json(school);
 }

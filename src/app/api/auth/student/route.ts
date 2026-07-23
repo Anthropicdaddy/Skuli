@@ -9,6 +9,12 @@ export async function POST(req: Request) {
     return NextResponse.json({ error: "School and Student ID are required" }, { status: 400 });
   }
 
+  // Check school is active
+  const school = await prisma.school.findUnique({ where: { id: schoolId } });
+  if (!school || school.status !== "active") {
+    return NextResponse.json({ error: "School not found or not active" }, { status: 404 });
+  }
+
   const student = await prisma.student.findFirst({
     where: { schoolId, admissionNo },
   });
