@@ -7,7 +7,7 @@ export async function GET() {
   if (!userId) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
   const staff = await prisma.staff.findFirst({ where: { clerkUserId: userId } });
-  if (!staff || staff.role !== "SUPER_ADMIN") {
+  if (!staff || !["SUPER_ADMIN", "PRINCIPAL"].includes(staff.role)) {
     return NextResponse.json({ error: "Forbidden" }, { status: 403 });
   }
 

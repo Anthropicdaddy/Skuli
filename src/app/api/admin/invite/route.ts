@@ -7,7 +7,7 @@ export async function POST(req: Request) {
   if (!userId) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
   const adminStaff = await prisma.staff.findFirst({ where: { clerkUserId: userId } });
-  if (!adminStaff || adminStaff.role !== "SUPER_ADMIN") {
+  if (!adminStaff || !["SUPER_ADMIN", "PRINCIPAL"].includes(adminStaff.role)) {
     return NextResponse.json({ error: "Forbidden" }, { status: 403 });
   }
 
