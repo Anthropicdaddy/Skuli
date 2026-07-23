@@ -21,7 +21,7 @@ export default function HomePage() {
                 Sign in
               </Link>
               <Link
-                href="https://cal.com/petermakau"
+                href="https://cal.com/peter-makau-scales"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="bg-black text-white text-sm font-medium px-4 py-2 rounded-lg hover:bg-black/80 transition"
@@ -46,7 +46,7 @@ export default function HomePage() {
             </p>
             <div className="flex items-center gap-3 mt-8">
               <Link
-                href="https://cal.com/petermakau"
+                href="https://cal.com/peter-makau-scales"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="bg-black text-white px-5 py-2.5 rounded-lg text-sm font-medium hover:bg-black/80 transition inline-flex items-center gap-2"
@@ -168,7 +168,7 @@ export default function HomePage() {
             Book a free onboarding call. We set everything up for you.
           </p>
           <Link
-            href="https://cal.com/petermakau"
+            href="https://cal.com/peter-makau-scales"
             target="_blank"
             rel="noopener noreferrer"
             className="inline-flex items-center gap-2 bg-black text-white px-6 py-3 rounded-lg text-sm font-medium hover:bg-black/80 transition mt-8"

@@ -42,7 +42,7 @@ export default async function DashboardLayout({
             Your account isn&apos;t linked to any school yet. Contact your school administrator to add you to Skuli.
           </p>
           <a
-            href="https://cal.com/petermakau"
+            href="https://cal.com/peter-makau-scales"
             target="_blank"
             rel="noopener noreferrer"
             className="inline-flex items-center gap-2 bg-black text-white px-5 py-2.5 rounded-lg text-sm font-medium hover:bg-black/80 transition"
