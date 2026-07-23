@@ -47,7 +47,8 @@ export default function NewSchoolPage() {
     if (res.ok) {
       router.push(`/admin/schools/${data.id}`);
     } else {
-      setError(data.error || "Failed to create school");
+      const detail = data.debug ? ` (${data.debug}${data.role ? `, role: ${data.role}` : ""})` : "";
+      setError(data.error + detail || "Failed to create school");
     }
     setLoading(false);
   }

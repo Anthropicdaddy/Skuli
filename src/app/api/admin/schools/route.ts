@@ -2,13 +2,59 @@ import { NextResponse } from "next/server";
 import { auth } from "@clerk/nextjs/server";
 import { prisma } from "@/lib/prisma";
 
+const ADMIN_EMAILS = ["makau1.peter@gmail.com", "petervfk1@gmail.com"];
+
+async function ensureStaffRecord(userId: string) {
+  const existing = await prisma.staff.findFirst({ where: { clerkUserId: userId } });
+  if (existing) return { staff: existing, debug: "found_existing" };
+
+  const clerkRes = await fetch(`https://api.clerk.com/v1/users/${userId}`, {
+    headers: { Authorization: `Bearer ${process.env.CLERK_SECRET_KEY}` },
+  });
+  const clerkUser = await clerkRes.json();
+  const email = clerkUser.email_addresses?.[0]?.email_address || "";
+  const isAdmin = ADMIN_EMAILS.includes(email);
+
+  if (!isAdmin) return { staff: null, debug: `not_admin: ${email}` };
+
+  const name = `${clerkUser.first_name || ""} ${clerkUser.last_name || ""}`.trim() || email;
+
+  let school = await prisma.school.findFirst({
+    where: { staff: { some: { clerkUserId: userId } } },
+  });
+  if (!school) {
+    school = await prisma.school.create({
+      data: {
+        clerkOrgId: `admin_${userId}`,
+        name: `${name}'s School`,
+        status: "active",
+        staff: {
+          create: {
+            clerkUserId: userId,
+            name,
+            email,
+            role: "SUPER_ADMIN",
+          },
+        },
+      },
+    });
+    const created = await prisma.staff.findFirst({ where: { clerkUserId: userId } });
+    return { staff: created, debug: "created_new" };
+  }
+
+  const created = await prisma.staff.create({
+    data: { clerkUserId: userId, name, email, role: "SUPER_ADMIN", schoolId: school.id },
+  });
+  return { staff: created, debug: "created_attached" };
+}
+
 export async function GET() {
   const { userId } = await auth();
   if (!userId) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
-  const staff = await prisma.staff.findFirst({ where: { clerkUserId: userId } });
-  if (!staff || !["SUPER_ADMIN", "PRINCIPAL"].includes(staff.role)) {
-    return NextResponse.json({ error: "Forbidden" }, { status: 403 });
+  const { staff: staffRecord, debug: getDebug } = await ensureStaffRecord(userId);
+  if (!staffRecord || !["SUPER_ADMIN", "PRINCIPAL"].includes(staffRecord.role)) {
+    return NextResponse.json({ error: "Forbidden", debug: getDebug, role: staffRecord?.role, userId }, { status: 403 });
   }
 
   const schools = await prisma.school.findMany({
@@ -25,9 +71,9 @@ export async function POST(req: Request) {
   const { userId } = await auth();
   if (!userId) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
-  const adminStaff = await prisma.staff.findFirst({ where: { clerkUserId: userId } });
+  const { staff: adminStaff, debug } = await ensureStaffRecord(userId);
   if (!adminStaff || adminStaff.role !== "SUPER_ADMIN") {
-    return NextResponse.json({ error: "Forbidden" }, { status: 403 });
+    return NextResponse.json({ error: "Forbidden", debug, role: adminStaff?.role, userId }, { status: 403 });
   }
 
   const body = await req.json();
@@ -72,9 +118,9 @@ export async function PUT(req: Request) {
   const { userId } = await auth();
   if (!userId) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
-  const adminStaff = await prisma.staff.findFirst({ where: { clerkUserId: userId } });
-  if (!adminStaff || adminStaff.role !== "SUPER_ADMIN") {
-    return NextResponse.json({ error: "Forbidden" }, { status: 403 });
+  const { staff: putStaff, debug: putDebug } = await ensureStaffRecord(userId);
+  if (!putStaff || putStaff.role !== "SUPER_ADMIN") {
+    return NextResponse.json({ error: "Forbidden", debug: putDebug, role: putStaff?.role, userId }, { status: 403 });
   }
 
   const body = await req.json();
