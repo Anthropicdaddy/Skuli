@@ -128,5 +128,9 @@ export function getSidebarItems(role: SchoolRole): { label: string; href: string
     items.push({ label: "Analytics", href: "/dashboard/analytics", icon: "Analytics" });
   }
 
+  if (isLeadership(role)) {
+    items.push({ label: "Settings", href: "/dashboard/settings", icon: "Settings" });
+  }
+
   return items;
 }

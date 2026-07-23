@@ -4,6 +4,8 @@ const isPublicRoute = createRouteMatcher([
   "/",
   "/sign-in(.*)",
   "/sign-up(.*)",
+  "/login",
+  "/invite(.*)",
   "/portal(.*)",
   "/student-login(.*)",
   "/student(.*)",
@@ -11,6 +13,7 @@ const isPublicRoute = createRouteMatcher([
   "/api/schools(.*)",
   "/api/auth(.*)",
   "/api/parent(.*)",
+  "/api/staff/invite(.*)",
   "/report(.*)",
 ]);
 

@@ -105,6 +105,7 @@ model School {
   county      String?
   subCounty   String?
   schoolType  String   @default("primary") // primary | secondary | tvet
+  joinCode    String?  // reusable code for new staff to join
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 
@@ -120,6 +121,7 @@ model School {
   trips           Trip[]
   studyMaterials  StudyMaterial[]
   auditLogs       AuditLog[]
+  inviteTokens    InviteToken[]
 
   @@map("schools")
 }
@@ -129,6 +131,7 @@ model School {
 model Staff {
   id              String     @id @default(cuid())
   clerkUserId     String?
+  staffId         String?    @unique // auto-generated: STS-clx1-001
   schoolId        String
   name            String
   email           String?
@@ -531,4 +534,25 @@ model AuditLog {
   @@index([schoolId])
   @@index([createdAt])
   @@map("audit_logs")
+}
+
+// ─── Invite Tokens ─────────────────────────────────────
+
+model InviteToken {
+  id          String   @id @default(cuid())
+  schoolId    String
+  email       String
+  name        String
+  role        SchoolRole
+  token       String   @unique
+  staffId     String?  // generated staff ID (e.g. STS-clx1-001)
+  used        Boolean  @default(false)
+  expiresAt   DateTime
+  createdAt   DateTime @default(now())
+
+  school      School   @relation(fields: [schoolId], references: [id], onDelete: Cascade)
+
+  @@index([token])
+  @@index([schoolId])
+  @@map("invite_tokens")
 }
