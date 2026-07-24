@@ -1,6 +1,10 @@
 import { Resend } from "resend";
 
-const resend = new Resend(process.env.RESEND_API_KEY);
+let resend: Resend;
+function getResend() {
+  if (!resend) resend = new Resend(process.env.RESEND_API_KEY);
+  return resend;
+}
 
 const FROM = "Skuli <onboarding@resend.dev>";
 const APP_URL = process.env.NEXT_PUBLIC_APP_URL || "https://skuli.vercel.app";
@@ -20,7 +24,7 @@ export async function sendStaffInviteEmail({
 }) {
   const inviteUrl = `${APP_URL}/invite/${token}`;
 
-  return resend.emails.send({
+  return getResend().emails.send({
     from: FROM,
     to,
     subject: `You've been invited to ${schoolName} on Skuli`,
@@ -61,7 +65,7 @@ export async function sendWelcomeEmail({
   schoolName: string;
   role: string;
 }) {
-  return resend.emails.send({
+  return getResend().emails.send({
     from: FROM,
     to,
     subject: `Welcome to ${schoolName} on Skuli!`,
@@ -98,7 +102,7 @@ export async function sendParentWelcomeEmail({
   studentName: string;
   schoolName: string;
 }) {
-  return resend.emails.send({
+  return getResend().emails.send({
     from: FROM,
     to,
     subject: `${studentName} has been enrolled at ${schoolName} on Skuli`,
