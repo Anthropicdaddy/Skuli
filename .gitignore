@@ -40,6 +40,4 @@ yarn-error.log*
 next-env.d.ts
 
 # generated
-src/generated/prisma
-apps/*/src/generated
-packages/*/src/generated
+**/src/generated
