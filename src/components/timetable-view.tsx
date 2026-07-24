@@ -16,8 +16,19 @@ type TimetableEntry = {
   staff: { name: string } | null;
 };
 
-export function TimetableView({ grades, timetable }: { grades: string[]; timetable: TimetableEntry[] }) {
+type Staff = { id: string; name: string };
+
+export function TimetableView({ grades, timetable, staff, schoolId }: { grades: string[]; timetable: TimetableEntry[]; staff: Staff[]; schoolId: string }) {
   const [selectedGrade, setSelectedGrade] = useState(grades[0] || "");
+  const [showAdd, setShowAdd] = useState(false);
+  const [addDay, setAddDay] = useState(0);
+  const [addPeriod, setAddPeriod] = useState(1);
+  const [addSubject, setAddSubject] = useState("");
+  const [addStaffId, setAddStaffId] = useState("");
+  const [addRoom, setAddRoom] = useState("");
+  const [addStart, setAddStart] = useState("08:00");
+  const [addEnd, setAddEnd] = useState("08:40");
+  const [adding, setAdding] = useState(false);
 
   const filtered = timetable;
 
@@ -26,6 +37,28 @@ export function TimetableView({ grades, timetable }: { grades: string[]; timetab
   }
 
   const maxPeriod = timetable.length > 0 ? Math.max(...timetable.map((t) => t.period)) : 7;
+
+  async function addEntry(e: React.FormEvent) {
+    e.preventDefault();
+    setAdding(true);
+    const res = await fetch("/api/timetable", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        schoolId,
+        grade: selectedGrade,
+        dayOfWeek: addDay,
+        period: addPeriod,
+        startTime: addStart,
+        endTime: addEnd,
+        subject: addSubject,
+        staffId: addStaffId || null,
+        room: addRoom || null,
+      }),
+    });
+    if (res.ok) window.location.reload();
+    setAdding(false);
+  }
 
   return (
     <div className="space-y-4">
@@ -43,15 +76,65 @@ export function TimetableView({ grades, timetable }: { grades: string[]; timetab
             </SelectContent>
           </Select>
         </div>
-        <div className="text-sm text-gray-500">
-          {filtered.length} entries
-        </div>
+        <div className="text-sm text-gray-500">{filtered.length} entries</div>
+        <button
+          onClick={() => setShowAdd(!showAdd)}
+          className="bg-black text-white text-xs font-medium px-3 py-1.5 rounded-lg hover:bg-black/80 transition"
+        >
+          {showAdd ? "Cancel" : "Add Entry"}
+        </button>
       </div>
+
+      {showAdd && (
+        <div className="bg-white rounded-xl border border-gray-200 p-4">
+          <h3 className="font-semibold text-sm mb-3">Add Timetable Entry</h3>
+          <form onSubmit={addEntry} className="grid grid-cols-3 gap-3">
+            <div>
+              <label className="text-xs text-gray-500 mb-1 block">Day</label>
+              <select value={addDay} onChange={(e) => setAddDay(parseInt(e.target.value))} className="w-full px-3 py-1.5 border border-gray-200 rounded-lg text-sm">
+                {DAYS.map((d, i) => <option key={d} value={i}>{d}</option>)}
+              </select>
+            </div>
+            <div>
+              <label className="text-xs text-gray-500 mb-1 block">Period</label>
+              <input type="number" value={addPeriod} onChange={(e) => setAddPeriod(parseInt(e.target.value))} min={1} max={12} className="w-full px-3 py-1.5 border border-gray-200 rounded-lg text-sm" />
+            </div>
+            <div>
+              <label className="text-xs text-gray-500 mb-1 block">Subject *</label>
+              <input type="text" value={addSubject} onChange={(e) => setAddSubject(e.target.value)} required placeholder="e.g. Mathematics" className="w-full px-3 py-1.5 border border-gray-200 rounded-lg text-sm" />
+            </div>
+            <div>
+              <label className="text-xs text-gray-500 mb-1 block">Start Time</label>
+              <input type="time" value={addStart} onChange={(e) => setAddStart(e.target.value)} className="w-full px-3 py-1.5 border border-gray-200 rounded-lg text-sm" />
+            </div>
+            <div>
+              <label className="text-xs text-gray-500 mb-1 block">End Time</label>
+              <input type="time" value={addEnd} onChange={(e) => setAddEnd(e.target.value)} className="w-full px-3 py-1.5 border border-gray-200 rounded-lg text-sm" />
+            </div>
+            <div>
+              <label className="text-xs text-gray-500 mb-1 block">Teacher</label>
+              <select value={addStaffId} onChange={(e) => setAddStaffId(e.target.value)} className="w-full px-3 py-1.5 border border-gray-200 rounded-lg text-sm">
+                <option value="">None</option>
+                {staff.map((s) => <option key={s.id} value={s.id}>{s.name}</option>)}
+              </select>
+            </div>
+            <div>
+              <label className="text-xs text-gray-500 mb-1 block">Room</label>
+              <input type="text" value={addRoom} onChange={(e) => setAddRoom(e.target.value)} placeholder="e.g. Room 5" className="w-full px-3 py-1.5 border border-gray-200 rounded-lg text-sm" />
+            </div>
+            <div className="col-span-3">
+              <button type="submit" disabled={adding || !addSubject} className="bg-black text-white text-xs font-medium px-4 py-1.5 rounded-lg hover:bg-black/80 transition disabled:opacity-50">
+                {adding ? "Adding..." : "Add Entry"}
+              </button>
+            </div>
+          </form>
+        </div>
+      )}
 
       {timetable.length === 0 ? (
         <div className="bg-white rounded-xl border border-gray-200 p-12 text-center text-gray-500">
           <span className="text-3xl block mb-2">📅</span>
-          No timetable entries yet. Add students and create a timetable.
+          No timetable entries yet. Click &quot;Add Entry&quot; above to create one.
         </div>
       ) : (
         <div className="bg-white rounded-xl border border-gray-200 overflow-hidden">

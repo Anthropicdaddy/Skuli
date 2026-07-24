@@ -1,12 +1,13 @@
 import { prisma } from "@/lib/prisma";
+import { getUserSchoolId } from "@/lib/school";
 import { SendNotificationForm } from "@/components/send-notification-form";
 
 export default async function NotificationsPage() {
-  const school = await prisma.school.findFirst();
-  if (!school) return <div className="p-8 text-gray-500">No school configured.</div>;
+  const schoolId = await getUserSchoolId();
+  if (!schoolId) return <div className="p-8 text-gray-500">No school configured.</div>;
 
   const notifications = await prisma.notification.findMany({
-    where: { schoolId: school.id },
+    where: { schoolId },
     orderBy: { createdAt: "desc" },
     take: 50,
   });
@@ -18,7 +19,7 @@ export default async function NotificationsPage() {
         <p className="text-gray-500 mt-1">Send SMS notifications to parents and staff</p>
       </div>
 
-      <SendNotificationForm schoolId={school.id} />
+      <SendNotificationForm schoolId={schoolId} />
 
       <div className="bg-white rounded-xl border border-gray-200 mt-6">
         <div className="p-4 border-b border-gray-200">

@@ -21,23 +21,100 @@ const RUBRIC: Record<string, { label: string; color: string }> = {
 
 const SUBJECTS = ["Mathematics", "Kiswahili", "English", "Science & Technology", "Hygiene & Nutrition", "Social Studies", "Religious Education", "Creative Arts"];
 
-export function ExamsList({ exams, students, grades }: { exams: Exam[]; students: Student[]; grades: string[] }) {
+export function ExamsList({ exams, students, grades, schoolId }: { exams: Exam[]; students: Student[]; grades: string[]; schoolId: string }) {
   const [selectedGrade, setSelectedGrade] = useState("");
   const [selectedSubject, setSelectedSubject] = useState("");
   const [marks, setMarks] = useState<Record<string, string>>({});
+  const [showCreate, setShowCreate] = useState(false);
+  const [examName, setExamName] = useState("");
+  const [examType, setExamType] = useState("CAT");
+  const [examTerm, setExamTerm] = useState("TERM_1");
+  const [examYear, setExamYear] = useState(new Date().getFullYear());
+  const [examGrade, setExamGrade] = useState("");
+  const [examWeight, setExamWeight] = useState(100);
+  const [creating, setCreating] = useState(false);
 
   const filtered = students.filter((s) => !selectedGrade || s.grade === selectedGrade);
+
+  async function createExam(e: React.FormEvent) {
+    e.preventDefault();
+    setCreating(true);
+    const res = await fetch("/api/exams", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ schoolId, name: examName, type: examType, term: examTerm, year: examYear, grade: examGrade, weight: examWeight }),
+    });
+    if (res.ok) {
+      window.location.reload();
+    }
+    setCreating(false);
+  }
 
   return (
     <div className="space-y-4">
       {/* Existing Exams */}
       <div className="bg-white rounded-xl border border-gray-200 overflow-hidden">
-        <div className="p-4 border-b border-gray-200">
+        <div className="p-4 border-b border-gray-200 flex items-center justify-between">
           <h3 className="font-semibold">Exams</h3>
+          <button
+            onClick={() => setShowCreate(!showCreate)}
+            className="bg-black text-white text-xs font-medium px-3 py-1.5 rounded-lg hover:bg-black/80 transition"
+          >
+            {showCreate ? "Cancel" : "Create Exam"}
+          </button>
         </div>
+
+        {showCreate && (
+          <div className="p-4 border-b border-gray-100 bg-gray-50">
+            <form onSubmit={createExam} className="grid grid-cols-2 gap-3">
+              <div>
+                <Label>Exam Name *</Label>
+                <input type="text" value={examName} onChange={(e) => setExamName(e.target.value)} required placeholder="e.g. Term 1 CAT 1" className="w-full px-3 py-1.5 border border-gray-200 rounded-lg text-sm" />
+              </div>
+              <div>
+                <Label>Grade *</Label>
+                <Select value={examGrade} onValueChange={(v) => setExamGrade(v ?? "")}>
+                  <SelectTrigger><SelectValue placeholder="Select" /></SelectTrigger>
+                  <SelectContent>{grades.map((g) => <SelectItem key={g} value={g}>{g}</SelectItem>)}</SelectContent>
+                </Select>
+              </div>
+              <div>
+                <Label>Type</Label>
+                <select value={examType} onChange={(e) => setExamType(e.target.value)} className="w-full px-3 py-1.5 border border-gray-200 rounded-lg text-sm">
+                  <option value="CAT">CAT</option>
+                  <option value="MID_TERM">Mid-Term</option>
+                  <option value="END_TERM">End-Term</option>
+                  <option value="MOCK">Mock</option>
+                </select>
+              </div>
+              <div>
+                <Label>Term</Label>
+                <select value={examTerm} onChange={(e) => setExamTerm(e.target.value)} className="w-full px-3 py-1.5 border border-gray-200 rounded-lg text-sm">
+                  <option value="TERM_1">Term 1</option>
+                  <option value="TERM_2">Term 2</option>
+                  <option value="TERM_3">Term 3</option>
+                </select>
+              </div>
+              <div>
+                <Label>Year</Label>
+                <input type="number" value={examYear} onChange={(e) => setExamYear(parseInt(e.target.value))} className="w-full px-3 py-1.5 border border-gray-200 rounded-lg text-sm" />
+              </div>
+              <div>
+                <Label>Weight (%)</Label>
+                <input type="number" value={examWeight} onChange={(e) => setExamWeight(parseInt(e.target.value))} min={1} max={100} className="w-full px-3 py-1.5 border border-gray-200 rounded-lg text-sm" />
+              </div>
+              <div className="col-span-2">
+                <button type="submit" disabled={creating || !examName || !examGrade} className="bg-black text-white text-xs font-medium px-4 py-1.5 rounded-lg hover:bg-black/80 transition disabled:opacity-50">
+                  {creating ? "Creating..." : "Create Exam"}
+                </button>
+              </div>
+            </form>
+          </div>
+        )}
+
         <div className="divide-y divide-gray-100">
           {exams.length === 0 ? (
-            <div className="p-8 text-center text-gray-500">No exams configured yet.</div>
+            <div className="p-8 text-center text-gray-500">No exams configured yet. Click &quot;Create Exam&quot; above.</div>
           ) : (
             exams.map((e) => (
               <div key={e.id} className="p-4 flex items-center justify-between hover:bg-gray-50">
