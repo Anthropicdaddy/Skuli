@@ -193,8 +193,18 @@ export default function LoginPage() {
           </div>
         )}
 
-        <div className="mt-8 text-center">
-          <Link href="/" className="text-xs text-black/30 hover:text-black/50">
+        <div className="mt-8 text-center space-y-3">
+          <p className="text-xs text-black/30">Not staff?</p>
+          <div className="flex items-center justify-center gap-4">
+            <Link href="/portal/login" className="text-xs text-black/50 hover:text-black/70 font-medium">
+              Parent Portal →
+            </Link>
+            <span className="text-black/10">|</span>
+            <Link href="/student-login" className="text-xs text-black/50 hover:text-black/70 font-medium">
+              Student Portal →
+            </Link>
+          </div>
+          <Link href="/" className="text-xs text-black/30 hover:text-black/50 block mt-4">
             ← Back to home
           </Link>
         </div>

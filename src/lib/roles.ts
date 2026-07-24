@@ -27,6 +27,7 @@ const ROLE_HIERARCHY: Record<SchoolRole, number> = {
 const MODULE_ACCESS: Record<string, SchoolRole[]> = {
   students: ["SUPER_ADMIN", "DIRECTOR", "PRINCIPAL", "DEPUTY_ACADEMICS", "DEPUTY_ADMIN", "SECRETARY", "CLASS_TEACHER", "TEACHER", "HOD", "SENIOR_TEACHER"],
   staff: ["SUPER_ADMIN", "DIRECTOR", "PRINCIPAL", "IT_MANAGER"],
+  classes: ["SUPER_ADMIN", "DIRECTOR", "PRINCIPAL", "DEPUTY_ACADEMICS", "DEPUTY_ADMIN", "CLASS_TEACHER", "TEACHER", "HOD", "SENIOR_TEACHER"],
   attendance: ["SUPER_ADMIN", "DIRECTOR", "PRINCIPAL", "DEPUTY_ACADEMICS", "CLASS_TEACHER", "TEACHER", "HOD", "SENIOR_TEACHER"],
   exams: ["SUPER_ADMIN", "DIRECTOR", "PRINCIPAL", "DEPUTY_ACADEMICS", "HOD", "TEACHER", "CLASS_TEACHER", "SENIOR_TEACHER"],
   fees: [],
@@ -94,6 +95,10 @@ export function getSidebarItems(role: SchoolRole): { label: string; href: string
 
   if (canAccessModule(role, "staff")) {
     items.push({ label: "Staff", href: "/dashboard/staff", icon: "Staff" });
+  }
+
+  if (canAccessModule(role, "classes")) {
+    items.push({ label: "Classes", href: "/dashboard/classes", icon: "Classes" });
   }
 
   if (canAccessModule(role, "attendance")) {

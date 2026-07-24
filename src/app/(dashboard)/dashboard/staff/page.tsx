@@ -43,16 +43,13 @@ export default function StaffPage() {
   useEffect(() => {
     fetch("/api/me")
       .then((r) => r.json())
-      .then((data) => {
+      .then(async (data) => {
         const schoolId = data.school?.id;
         if (schoolId) {
-          return fetch(`/api/school/staff?schoolId=${schoolId}`);
+          const res = await fetch(`/api/school/staff?schoolId=${schoolId}`);
+          const staffData = await res.json();
+          if (Array.isArray(staffData)) setStaff(staffData);
         }
-        return { json: () => [] };
-      })
-      .then((r) => r.json?.() ?? r)
-      .then((data) => {
-        if (Array.isArray(data)) setStaff(data);
         setLoading(false);
       })
       .catch(() => setLoading(false));
@@ -105,18 +102,21 @@ export default function StaffPage() {
   return (
     <div className="max-w-3xl">
       <div className="flex items-center justify-between mb-6">
-        <h1 className="text-xl font-semibold text-black">Staff</h1>
+        <div>
+          <h1 className="text-xl font-semibold text-black">Staff</h1>
+          <p className="text-xs text-black/40 mt-0.5">{staff.length} member{staff.length !== 1 ? "s" : ""}</p>
+        </div>
         <button
           onClick={() => setShowInvite(!showInvite)}
           className="bg-black text-white text-sm font-medium px-4 py-2 rounded-lg hover:bg-black/80 transition"
         >
-          {showInvite ? "Cancel" : "Invite Staff"}
+          {showInvite ? "Cancel" : "+ Add Staff"}
         </button>
       </div>
 
       {showInvite && (
         <div className="bg-white border border-slate-200 rounded-lg p-5 mb-6">
-          <h2 className="text-sm font-semibold text-black mb-4">Invite Staff Member</h2>
+          <h2 className="text-sm font-semibold text-black mb-4">Add Staff Member</h2>
           <form onSubmit={handleInvite} className="space-y-4">
             <div className="grid grid-cols-2 gap-4">
               <div>

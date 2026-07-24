@@ -167,17 +167,25 @@ export default function HomePage() {
           <p className="text-black/40 mt-3 text-lg max-w-md mx-auto">
             Book a free onboarding call. We set everything up for you.
           </p>
-          <Link
-            href="https://cal.com/peter-makau-scales"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="inline-flex items-center gap-2 bg-black text-white px-6 py-3 rounded-lg text-sm font-medium hover:bg-black/80 transition mt-8"
-          >
-            Book a demo
-            <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" d="M13.5 4.5 21 12m0 0-7.5 7.5M21 12H3" />
-            </svg>
-          </Link>
+          <div className="flex flex-col sm:flex-row items-center justify-center gap-3 mt-8">
+            <Link
+              href="https://cal.com/peter-makau-scales"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-2 bg-black text-white px-6 py-3 rounded-lg text-sm font-medium hover:bg-black/80 transition"
+            >
+              Book a demo
+              <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" d="M13.5 4.5 21 12m0 0-7.5 7.5M21 12H3" />
+              </svg>
+            </Link>
+            <Link href="/student-login" className="border border-black/10 text-black px-6 py-3 rounded-lg text-sm font-medium hover:bg-black/5 transition">
+              Student Portal
+            </Link>
+            <Link href="/portal/login" className="border border-black/10 text-black px-6 py-3 rounded-lg text-sm font-medium hover:bg-black/5 transition">
+              Parent Portal
+            </Link>
+          </div>
         </div>
       </section>
 

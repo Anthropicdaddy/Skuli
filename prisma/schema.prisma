@@ -90,6 +90,12 @@ enum SubmissionStatus {
   RETURNED
 }
 
+enum EnrollmentStatus {
+  PENDING
+  APPROVED
+  REJECTED
+}
+
 // ─── School ──────────────────────────────────────────────
 
 model School {
@@ -111,6 +117,7 @@ model School {
 
   staff           Staff[]
   students        Student[]
+  classes         Class[]
   departments     Department[]
   exams           Exam[]
   assignments     Assignment[]
@@ -150,7 +157,8 @@ model Staff {
   department      Department? @relation(fields: [departmentId], references: [id], onDelete: SetNull)
   attendance      StaffAttendance[]
   timetables      Timetable[]
-  classTeacherOf  String?    // grade/stream they're class teacher of
+  classTeacherOf  Class?   @relation("ClassTeacher")
+  coTeaching      Class[]  @relation("CoTeacher")
 
   @@index([schoolId])
   @@index([schoolId, role])
@@ -184,20 +192,25 @@ model Student {
   stream         String?
   gender         String?
   dateOfBirth    DateTime?
-   upiNumber      String?  // NEMIS Unique Personal Identifier
-   parentName     String?
+  upiNumber      String?
+  parentName     String?
   parentPhone    String?
   parentEmail    String?
-  parentPassword String?  // for parent portal login
+  parentPassword String?
+  classId        String?
+  parentId       String?
   createdAt      DateTime @default(now())
   updatedAt      DateTime @updatedAt
 
   school         School              @relation(fields: [schoolId], references: [id], onDelete: Cascade)
+  class          Class?              @relation(fields: [classId], references: [id])
+  parent         Parent?             @relation(fields: [parentId], references: [id])
+  enrollments    StudentEnrollment[]
   cbcResults     CbcResult[]
   competencies   StudentCompetency[]
-   attendance     Attendance[]
-   submissions    AssignmentSubmission[]
-   notifications  Notification[]
+  attendance     Attendance[]
+  submissions    AssignmentSubmission[]
+  notifications  Notification[]
 
   @@unique([schoolId, admissionNo])
   @@index([schoolId])
@@ -555,4 +568,88 @@ model InviteToken {
   @@index([token])
   @@index([schoolId])
   @@map("invite_tokens")
+}
+
+// ─── Class ─────────────────────────────────────────────
+
+model Class {
+  id              String   @id @default(cuid())
+  name            String   // e.g. "Grade 1"
+  grade           Int      // 1-6
+  schoolId        String
+  school          School   @relation(fields: [schoolId], references: [id], onDelete: Cascade)
+  classTeacherId  String?   @unique
+  classTeacher    Staff?   @relation("ClassTeacher", fields: [classTeacherId], references: [id], onDelete: SetNull)
+  coTeachers      Staff[]  @relation("CoTeacher")
+  students        Student[]
+  enrollments     StudentEnrollment[]
+  chatMessages    ChatMessage[]
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  @@unique([schoolId, grade])
+  @@index([schoolId])
+  @@map("classes")
+}
+
+// ─── Student Enrollment ──────────────────────────────────
+
+model StudentEnrollment {
+  id        String   @id @default(cuid())
+  studentId String
+  student   Student  @relation(fields: [studentId], references: [id], onDelete: Cascade)
+  classId   String
+  class     Class    @relation(fields: [classId], references: [id], onDelete: Cascade)
+  status    EnrollmentStatus @default(PENDING)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([studentId, classId])
+  @@map("student_enrollments")
+}
+
+// ─── Chat Message ───────────────────────────────────────
+
+model ChatMessage {
+  id         String   @id @default(cuid())
+  classId    String
+  class      Class    @relation(fields: [classId], references: [id], onDelete: Cascade)
+  senderId   String
+  senderName String
+  senderType String   // "teacher" or "student"
+  content    String
+  createdAt  DateTime @default(now())
+
+  @@index([classId, createdAt])
+  @@map("chat_messages")
+}
+
+// ─── Chat Cooldown ──────────────────────────────────────
+
+model ChatCooldown {
+  id           String   @id @default(cuid())
+  classId      String
+  userId       String
+  lastSent     DateTime
+  messageCount Int      @default(0)
+  windowStart  DateTime
+
+  @@unique([classId, userId])
+  @@map("chat_cooldowns")
+}
+
+// ─── Parent ─────────────────────────────────────────────
+
+model Parent {
+  id        String   @id @default(cuid())
+  email     String   @unique
+  password  String
+  firstName String
+  lastName  String
+  phone     String?
+  children  Student[]
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("parents")
 }
